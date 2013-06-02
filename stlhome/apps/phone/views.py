@@ -235,9 +235,9 @@ class VerifyShelterAvailabilityView(TwilioView):
 
         r = Response()
         r.say('Hello, this is the St. Louis Homeless Help Hotline, calling on behalf of')
-        # play name
+        r.play(call.client_name)
         r.say('who is near')
-        # play location
+        r.play(call.location_name)
 
         with r.gather(finishOnKey='#', method='POST', action=url, numDigits=1) as g:
             g.say('Do you %d beds available? Press 1 for yes, and 0 for no.' % call.bed_count)
