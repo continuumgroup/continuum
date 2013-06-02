@@ -2,7 +2,7 @@ from datetime import datetime
 from django.conf import settings
 from django.db import models
 import logging
-from pygeocoder import Geocoder
+# from pygeocoder import Geocoder
 
 from stlhome.lib.choice import Choice
 
@@ -41,18 +41,19 @@ class Shelter(models.Model):
 
     def set_coords(self):
         '''set coordinates based on an address'''
-        result = Geocoder.geocode(self.address)
-        # use the first result, if you can't, log and exit
-        try:
-            location = result.data[0]['geometry']['location']
-        except IndexError:
-            logger.exception('Error geocoding')
-            return
-        except KeyError:
-            logger.exception('Misformated Geocoder data')
-            return
+        self.latitude, self.longitude = 0, 0
+        # result = Geocoder.geocode(self.address)
+        # # use the first result, if you can't, log and exit
+        # try:
+        #     location = result.data[0]['geometry']['location']
+        # except IndexError:
+        #     logger.exception('Error geocoding')
+        #     return
+        # except KeyError:
+        #     logger.exception('Misformated Geocoder data')
+        #     return
 
-        self.latitude, self.longitude = location['lat'], location['lng']
+        # self.latitude, self.longitude = location['lat'], location['lng']
 
     @classmethod
     def pre_save(cls, **kwargs):
