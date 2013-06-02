@@ -133,7 +133,10 @@ class ShelterCallView(TwilioView):
                 'http://' + site.domain,
                 reverse(
                     'phone:verify_shelter_availability',
-                    kwargs={'client_call': client_call}
+                    kwargs={
+                        'client_call': client_call,
+                        'pk': pks[0]
+                    }
                 )
             ),
             method='GET',
@@ -191,9 +194,11 @@ class PostShelterCallView(TwilioView):
                 call.shelter.name,
                 call.shelter.address
             ))
+            call.delete()
             return r
 
         else:
+            call.delete()
             return redirect(reverse(
                 'phone:start_shelter_call',
                 kwargs={
@@ -204,7 +209,38 @@ class PostShelterCallView(TwilioView):
 
 
 class VerifyShelterAvailabilityView(TwilioView):
-    def get(self, request, client_call):
+    def get(self, request, client_call, pk):
+        call = Call.objects.get(pk=client_call)
+        url = reverse(
+            'phone:verify_shelter_availability',
+            kwargs={'pk': pk, 'client_call': client_call}
+        )
+
         r = Response()
-        r.say('Is your refrigerator running?')
+        r.say('Hello, this is the St. Louis Homeless Help Hotline, calling on behalf of')
+        # play name
+        r.say('who is near')
+        # play location
+
+        with r.gather(finishOnKey='#', method='POST', action=url, numDigits=1) as g:
+            g.say('Do you %d beds available? Press 1 for yes, and 0 for no.' % call.bed_count)
+
         return r
+
+    def post(self, request, client_call, pk):
+        r = Response()
+
+        if request.POST['Digits'] == '1':
+            call = Call.objects.get(pk=client_call)
+            shelter = Shelter.objects.get(pk=pk)
+            call.shelter = shelter
+            shelter.save()
+
+            r.say('Thank you. We will inform')
+            # play name
+            r.say('who you should expect tonight')
+        else:
+            r.say('Thank you anyway. Have a nice day.')
+
+        return r
+            
