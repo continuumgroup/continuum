@@ -199,6 +199,9 @@ THIRD_PARTY_APPS = (
 )
 
 LOCAL_APPS = (
+    'apps.profile',
+    'apps.shelters',
+    'apps.phone',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
