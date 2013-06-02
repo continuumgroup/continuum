@@ -16,14 +16,28 @@ class StartView(TwilioView):
         return r
 
     def post(self, request):
-        print request.POST
         if request.POST['Digits'] == '1':
-            r = Response()
-            r.say('I will redirect you')
+            return redirect(reverse('phone:collect_location'))
         elif request.POST['Digits'] == '0':
             r = Response()
             r.say('You are calling an operator now in your mind')
         else:
-            r = redirect(reverse('phone:start'), permanent=False)
+            r = redirect(reverse('phone:start'))
 
+        return r
+
+class CollectLocationView(TwilioView):
+    def get(self, request):
+        r = Response()
+        
+        r.say('''"Where are you now? At the tone, please say an address or street intersection in the Saint Louis area. Then press Pound.''')
+        r.record(action=reverse('phone:collect_location'), method='POST', maxLength=10, timeout=2, transcribe=True)
+
+        return r
+
+    def post(self, request):
+        print request.POST
+
+        r = Response()
+        r.say('thanks. love ya')
         return r
