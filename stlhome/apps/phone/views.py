@@ -174,9 +174,12 @@ def shelter_call_callback(request, client_call, pks):
 
 
 class PostShelterCallView(TwilioView):
-    def get(request, client_call, pks):
+    def get(self, request, client_call, pks):
+        print '1'
         if pks == '':
             return redirect(reverse('phone:operator'))
+
+        print '2'
 
         pks = pks.split(',')
 
