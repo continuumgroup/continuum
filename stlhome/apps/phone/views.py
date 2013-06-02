@@ -1,4 +1,5 @@
 from urlparse import urljoin
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.conf import settings
 from django.contrib.sites.models import Site
@@ -173,19 +174,11 @@ def shelter_call_callback(request, client_call, pks):
             )
         ),
     )
-
+    return HttpResponse('')
 
 
 class PostShelterCallView(TwilioView):
     def get(self, request, client_call, pks):
-        print '1'
-        if pks == '':
-            return redirect(reverse('phone:operator'))
-
-        print '2'
-
-        pks = pks.split(',')
-
         call = Call.objects.get(pk=client_call)
         if call.shelter:
             r = Response()
@@ -196,6 +189,9 @@ class PostShelterCallView(TwilioView):
             ))
             call.delete()
             return r
+
+        elif pks == '':
+            return redirect(reverse('phone:operator'))
 
         else:
             call.delete()
