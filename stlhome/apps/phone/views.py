@@ -49,7 +49,7 @@ class CollectLocationView(TwilioView):
 
 class OperatorView(TwilioView):
     def get(self, request):
-        r = Request()
+        r = Response()
         r.say('You will be connected to an operator in the final product. For now, the call is over. Thank you.')
         return r
 
@@ -136,7 +136,8 @@ class ShelterCallView(TwilioView):
                     kwargs={'client_call': client_call}
                 )
             ),
-            status_callback='/phone/shelter_call_callback/%s/%s' % (
+            status_callback='http://%s/phone/shelter_call_callback/%s/%s' % (
+                site.domain,
                 client_call, ','.join(pks[1:])
             ),
             method='GET'
