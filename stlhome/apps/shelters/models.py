@@ -22,10 +22,6 @@ class ShelterManager(models.Manager):
             availability__available=0
         )
 
-    def __init__(self, *args, **kwargs):
-        self.answer = 42
-        super(ShelterManager, self).save(*args, **kwargs)
-
 
 class Shelter(models.Model):
     '''a single location shelter'''
