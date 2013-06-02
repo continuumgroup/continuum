@@ -129,10 +129,13 @@ class ShelterCallView(TwilioView):
         client.calls.create(
             to=shelter.phone_number,
             from_=settings.TWILIO_CALLER_ID,
-            url=urljoin(site.domain, reverse(
-                'phone:verify_shelter_availability',
-                kwargs={'client_call': client_call}
-            )),
+            url=urljoin(
+                'http://' + site.domain,
+                reverse(
+                    'phone:verify_shelter_availability',
+                    kwargs={'client_call': client_call}
+                )
+            ),
             status_callback=reverse(
                 'phone:post_shelter_call',
                 kwargs={
