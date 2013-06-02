@@ -40,7 +40,7 @@ class CollectLocationView(TwilioView):
         return redirect(reverse('bed_number'))
 
 
-class VolunteerRedirectView(TwilioView):
+class OperatorView(TwilioView):
     def get(self, request):
         r = Request()
         r.say('You will be connected to an operator in the final product. For now, the call is over. Thank you.')
@@ -48,9 +48,9 @@ class VolunteerRedirectView(TwilioView):
 
 class BedCountView(TwilioView):
     def get(self, request):
-        r = Request()
+        r = Response()
         r.say('How many beds do you need tonight?')
-        with r.gather(finishOnKey='#', method='POST', action=reverse('phone:bed_count'), numdigits=1):
+        with r.gather(finishOnKey='#', method='POST', action=reverse('phone:bed_count'), numdigits=1) as g:
             g.say('Press a number, then press pound')
 
         return r
