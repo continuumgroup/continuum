@@ -103,7 +103,7 @@ class FindShelterView(TwilioView):
         shelters = Shelter.objects.all()
         return redirect(reverse('phone:start_shelter_call', kwargs={
             'pks': ','.join([str(s.pk) for s in shelters]),
-            'client_call': Call.objects.get_or_create(sid=request.POST['CallSid'])[0].pk
+            'client_call': Call.objects.get_or_create(sid=request.GET['CallSid'])[0].pk
         }))
 
 
@@ -173,6 +173,7 @@ class PostShelterCallView(TwilioView):
                     'client_call': client_call
                 }
             ))
+
 
 class VerifyShelterAvailabilityView(TwilioView):
     def get():
