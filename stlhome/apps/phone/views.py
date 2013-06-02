@@ -34,11 +34,8 @@ class CollectLocationView(TwilioView):
         return r
 
     def post(self, request):
-        print request.POST
-
-        r = Response()
-        r.say('thanks. love ya')
-        return r
+        # TODO: fill out this stub appropriate GIS conversion
+        return redirect(reverse('bed_number'))
 
 
 class VolunteerRedirectView(TwilioView):
