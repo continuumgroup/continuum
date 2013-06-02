@@ -19,7 +19,7 @@ class StartView(TwilioView):
 
         r = Response()
 
-        r.say('''You have reached the St. Louis homeless help hotline. If you need immediate help, hang up and dial 9 1 1.''')
+        r.say('''You have reached the Continuum. If you need immediate help, hang up and dial 9 1 1.''')
         with r.gather(finishOnKey='#', method='POST', action=reverse('phone:start'), numDigits=1) as g:
             g.say('If you need a bed tonight, press 1. To speak with a volunteer, press 0.')
 
@@ -234,7 +234,7 @@ class VerifyShelterAvailabilityView(TwilioView):
         )
 
         r = Response()
-        r.say('Hello, this is the St. Louis Homeless Help Hotline, calling on behalf of')
+        r.say('Hello, this is the Continuum, calling on behalf of')
         r.play(call.client_name)
         r.say('who is near')
         r.play(call.location_name)
