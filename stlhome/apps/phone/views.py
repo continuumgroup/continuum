@@ -63,7 +63,7 @@ class BedCountView(TwilioView):
     def post(self, request):
         digit = request.POST['Digits']
         if digit in '123456789':
-            call = Call.objects.get_or_create(sid=request.POST['CallSid'])
+            call, created = Call.objects.get_or_create(sid=request.POST['CallSid'])
             call.bed_count = int(digit)
             call.save()
             
