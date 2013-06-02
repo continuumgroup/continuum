@@ -23,3 +23,7 @@ class Choice(object):
     @classmethod
     def get_value(self, key):
         return self._hash[key]
+
+    @classmethod
+    def longest_length(self):
+        return max([len(val) for val in self._hash.values()])
