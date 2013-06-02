@@ -46,6 +46,7 @@ class OperatorView(TwilioView):
         r.say('You will be connected to an operator in the final product. For now, the call is over. Thank you.')
         return r
 
+
 class BedCountView(TwilioView):
     def get(self, request):
         r = Response()
@@ -58,7 +59,7 @@ class BedCountView(TwilioView):
     def post(self, request):
         digit = request.POST['Digits']
         if digit in '123456789':
-            Call.filter(sid=request.POST['CallSid']).update(bed_count=int(digit))
+            Call.objects.filter(sid=request.POST['CallSid']).update(bed_count=int(digit))
             # TODO: our shelter logic
         else:
             redirect(reverse('phone:bed_count'))
