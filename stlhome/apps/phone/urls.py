@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
 
+from .views import HelloWorldView
+
 urlpatterns = patterns(
-    'stlhome.apps.phone.views',
-    url(r'^hello_world/$', 'hello_world', name='hello_world'),
+    '',
+    url(r'^hello_world/$', HelloWorldView.as_view(), name='hello_world'),
 )
