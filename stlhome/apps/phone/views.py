@@ -3,12 +3,16 @@ from django.core.urlresolvers import reverse
 from twilio.twiml import Response
 from django_twilio.decorators import twilio_view
 
+from stlhome.apps.shelters.models import Shelter
 from stlhome.lib.twilioview import TwilioView
+from stlhome.lib.twilioclient import client
 
 from .models import Call
 
 class StartView(TwilioView):
     def get(self, request):
+        Call.objects.get_or_create(sid=request.GET['CallSid'])
+
         r = Response()
 
         r.say('''You have reached the St. Louis homeless help hotline. If you need immediate help, hang up and dial 9 1 1.''')
@@ -37,7 +41,7 @@ class CollectLocationView(TwilioView):
 
     def post(self, request):
         # TODO: fill out this stub appropriate GIS conversion
-        return redirect(reverse('bed_number'))
+        return redirect(reverse('phone:bed_number'))
 
 
 class OperatorView(TwilioView):
@@ -59,7 +63,57 @@ class BedCountView(TwilioView):
     def post(self, request):
         digit = request.POST['Digits']
         if digit in '123456789':
-            Call.objects.filter(sid=request.POST['CallSid']).update(bed_count=int(digit))
-            # TODO: our shelter logic
+            call = Call.objects.get_or_create(sid=request.POST['CallSid'])
+            call.bed_count = int(digit)
+            call.save()
+            
+            return redirect(reverse('phone:find_shelter'))
         else:
-            redirect(reverse('phone:bed_count'))
+            return redirect(reverse('phone:bed_count'))
+
+
+class FindShelterView(TwilioView):
+    # TODO: implement this API
+    # def setup_call(self, request):
+    #     call = Call.objects.get_or_create(sid=request.POST['CallSid'])
+    #     shelters = shelter.objects.find_beds_for_location(
+    #         bed_count=call.bed_count,
+    #         latitude=38.62824, longitude=-90.19069
+    #     )
+    #     call.constrain(shelters)
+
+    #     return call
+
+    # def get(self, request):
+    #     call = self.setup_call(request)
+    #     question, kind = call.get_question()
+
+    #     r = Response()
+    #     r.say(question)
+    #     with r.gather(finishOnKey='#', method='POST', action=reverse('phone:find_shelter'), numdigits=4) as g:
+    #         if kind == 'boolean':
+    #             g.say('Press 1 for yes, 0 for no and then press pound.')
+    #         elif kind == 'int':
+    #             g.say('Press pound when finished.')
+
+    #     return r
+
+    def get(self, request):
+        shelters = Shelter.objects.all()
+        return redirect(reverse('phone:start_shelter_call'), '?%s' % '&'.join(['shelter=%d' % s.pk for s in shelters]))
+
+
+class ShelterCallView(TwilioView):
+    def get(self, request):
+        pk = request.GET.getlist('shelter')[0]
+        shelter = Shelter.objects.get(pk=pk)
+
+        client.calls.create(
+            to=shelter.phone_number,
+            from_=settings.TWILIO_CALLER_ID,
+            url='http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient'
+        )
+
+        r = Response()
+        r.enqueue(name='waiting_for_shelter', wait_url='http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient')
+        return r
