@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from twilio.twiml import Response
 from django_twilio.decorators import twilio_view
@@ -15,6 +16,14 @@ class StartView(TwilioView):
         return r
 
     def post(self, request):
-        r = Response()
-        r.say('You did a thing. %r' % request.POST)
+        print request.POST
+        if request.POST['Digits'] == '1':
+            r = Response()
+            r.say('I will redirect you')
+        elif request.POST['Digits'] == '0':
+            r = Response()
+            r.say('You are calling an operator now in your mind')
+        else:
+            r = redirect(reverse('phone:start'), permanent=False)
+
         return r
