@@ -219,7 +219,7 @@ class VerifyShelterAvailabilityView(TwilioView):
         # play location
 
         with r.gather(finishOnKey='#', method='POST', action=url, numDigits=1) as g:
-            g.say('Do you  %d beds available? Press 1 for yes, and 0 for no.' % call.bed_count)
+            g.say('Do you %d beds available? Press 1 for yes, and 0 for no.' % call.bed_count)
 
         return r
 
@@ -228,9 +228,8 @@ class VerifyShelterAvailabilityView(TwilioView):
 
         if request.POST['Digits'] == '1':
             call = Call.objects.get(pk=client_call)
-            shelter = Shelter.objects.get(pk=pk)
-            call.shelter = shelter
-            shelter.save()
+            call.shelter = Shelter.objects.get(pk=pk)
+            call.save()
 
             r.say('Thank you. We will inform them that %d beds have been reserved. Goodbye.' % call.bed_count)
         else:
