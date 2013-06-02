@@ -41,7 +41,7 @@ class CollectLocationView(TwilioView):
 
     def post(self, request):
         # TODO: fill out this stub appropriate GIS conversion
-        return redirect(reverse('phone:bed_number'))
+        return redirect(reverse('phone:bed_count'))
 
 
 class OperatorView(TwilioView):
