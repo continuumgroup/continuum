@@ -48,7 +48,7 @@ class VolunteerRedirectView(TwilioView):
 
 class BedCountView(TwilioView):
     def get(self, request):
-        r = Request9)
+        r = Request()
         r.say('How many beds do you need tonight?')
         with r.gather(finishOnKey='#', method='POST', action=reverse('phone:bed_count'), numdigits=1):
             g.say('Press a number, then press pound')
