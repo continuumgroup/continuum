@@ -199,7 +199,7 @@ THIRD_PARTY_APPS = (
 )
 
 LOCAL_APPS = (
-    'apps.profile',
+    'apps.profiles',
     'apps.shelters',
     'apps.phone',
 )
