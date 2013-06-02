@@ -137,7 +137,7 @@ class ShelterCallView(TwilioView):
                 )
             ),
             status_callback=reverse(
-                'phone:post_shelter_call',
+                'phone:shelter_call_callback',
                 kwargs={
                     'pks': ','.join(pks[1:]),
                     'client_call': client_call
@@ -152,6 +152,26 @@ class ShelterCallView(TwilioView):
             wait_url='http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient'
         )
         return r
+
+
+def send_client_to_post(request, client_call, pks):
+    call = Call.objects.get(pk=client_call)
+    site = Site.objects.get_current()
+    client.calls.route(
+        sid=call.sid,
+        method='GET',
+        url=urljoin(
+            'http://' + site.domain,
+            reverse(
+                'phone:post_shelter_call',
+                kwargs={
+                    'pks': pks,
+                    'client_call': client_call
+                }
+            )
+        ),
+    )
+
 
 
 class PostShelterCallView(TwilioView):
