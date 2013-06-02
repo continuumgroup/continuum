@@ -5,6 +5,8 @@ from django_twilio.decorators import twilio_view
 
 from stlhome.lib.twilioview import TwilioView
 
+from .models import Call
+
 class StartView(TwilioView):
     def get(self, request):
         r = Response()
@@ -43,3 +45,20 @@ class VolunteerRedirectView(TwilioView):
         r = Request()
         r.say('You will be connected to an operator in the final product. For now, the call is over. Thank you.')
         return r
+
+class BedCountView(TwilioView):
+    def get(self, request):
+        r = Request9)
+        r.say('How many beds do you need tonight?')
+        with r.gather(finishOnKey='#', method='POST', action=reverse('phone:bed_count'), numdigits=1):
+            g.say('Press a number, then press pound')
+
+        return r
+
+    def post(self, request):
+        digit = request.POST['Digits']
+        if digit in '123456789':
+            Call.filter(sid=request.POST['CallSid']).update(bed_count=int(digit))
+            # TODO: our shelter logic
+        else:
+            redirect(reverse('phone:bed_count'))
