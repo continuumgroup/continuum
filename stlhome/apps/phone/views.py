@@ -136,11 +136,12 @@ class ShelterCallView(TwilioView):
                     kwargs={'client_call': client_call}
                 )
             ),
+            method='GET'
             status_callback='http://%s/phone/shelter_call_callback/%s/%s' % (
                 site.domain,
                 client_call, ','.join(pks[1:])
             ),
-            method='GET'
+            status_method='GET',
         )
 
         r = Response()
