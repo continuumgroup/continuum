@@ -1,6 +1,5 @@
 """Common settings and globals."""
 
-from os import environ
 
 from datetime import timedelta
 from os.path import abspath, basename, dirname, join, normpath
@@ -197,9 +196,6 @@ THIRD_PARTY_APPS = (
 
     # Asynchronous task queue:
     'djcelery',
-
-    'django_twilio',
-
 )
 
 LOCAL_APPS = (
@@ -261,5 +257,12 @@ COMPRESS_JS_FILTERS = [
     'compressor.filters.template.TemplateFilter',
 ]
 ########## END COMPRESSION CONFIGURATION
+
+########## BUSINESS MAGIC
+from datetime import timedelta
+AVAILABILITY_EXPIRY = timedelta(hours=12)
+########## END BUSINESS MAGIC
+
 TWILIO_ACCOUNT_SID = environ.get('TWILIO_ACCOUNT_SID', 'ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 TWILIO_AUTH_TOKEN = environ.get('TWILIO_AUTH_TOKEN', 'YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY')
+
