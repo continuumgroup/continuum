@@ -59,7 +59,7 @@ class Shelter(models.Model):
     def pre_save(cls, **kwargs):
         'hook into a pre_save signal, registered elsewhere'
         instance = kwargs['instance']
-        if not self.latitude or not self.longitude:
+        if not instance.latitude or not instance.longitude:
             instance.set_coords()
 
 # connect singals for Shelter
