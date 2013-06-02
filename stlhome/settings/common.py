@@ -1,7 +1,7 @@
 """Common settings and globals."""
 
-
 from datetime import timedelta
+from os import environ
 from os.path import abspath, basename, dirname, join, normpath
 from sys import path
 
