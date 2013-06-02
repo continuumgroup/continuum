@@ -1,4 +1,5 @@
 from django.shortcuts import redirect
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from twilio.twiml import Response
 from django_twilio.decorators import twilio_view
@@ -100,12 +101,12 @@ class FindShelterView(TwilioView):
 
     def get(self, request):
         shelters = Shelter.objects.all()
-        return redirect(reverse('phone:start_shelter_call'), '?%s' % '&'.join(['shelter=%d' % s.pk for s in shelters]))
+        return redirect(reverse('phone:start_shelter_call', kwargs={'pks': ','.join([str(s.pk) for s in shelters])}))
 
 
 class ShelterCallView(TwilioView):
-    def get(self, request):
-        pk = request.GET.getlist('shelter')[0]
+    def get(self, request, pks):
+        pk = pks.split(',')[0]
         shelter = Shelter.objects.get(pk=pk)
 
         client.calls.create(
