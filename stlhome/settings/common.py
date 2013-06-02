@@ -200,6 +200,7 @@ THIRD_PARTY_APPS = (
 
 LOCAL_APPS = (
     'apps.profiles',
+    'apps.shelters',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -262,3 +263,8 @@ COMPRESS_JS_FILTERS = [
     'compressor.filters.template.TemplateFilter',
 ]
 ########## END COMPRESSION CONFIGURATION
+
+########## BUSINESS MAGIC
+from datetime import timedelta
+AVAILABILITY_EXPIRY = timedelta(hours=12)
+########## END BUSINESS MAGIC
