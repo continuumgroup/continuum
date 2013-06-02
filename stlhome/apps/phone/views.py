@@ -1,5 +1,7 @@
+from urlparse import urljoin
 from django.shortcuts import redirect
 from django.conf import settings
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from twilio.twiml import Response
 from django_twilio.decorators import twilio_view
@@ -123,13 +125,14 @@ class ShelterCallView(TwilioView):
                     }
                 ))
 
+        site = Site.objects.get_current()
         client.calls.create(
             to=shelter.phone_number,
             from_=settings.TWILIO_CALLER_ID,
-            url=reverse(
+            url=urljoin(site.domain, reverse(
                 'phone:verify_shelter_availability',
                 kwargs={'client_call': client_call}
-            ),
+            )),
             status_callback=reverse(
                 'phone:post_shelter_call',
                 kwargs={
