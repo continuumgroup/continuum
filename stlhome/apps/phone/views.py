@@ -126,17 +126,17 @@ class ShelterCallView(TwilioView):
         client.calls.create(
             to=shelter.phone_number,
             from_=settings.TWILIO_CALLER_ID,
-            url=redirect(reverse(
+            url=reverse(
                 'phone:verify_shelter_availability',
                 kwargs={'client_call': client_call}
-            )),
-            status_callback=redirect(reverse(
+            ),
+            status_callback=reverse(
                 'phone:post_shelter_call',
                 kwargs={
-                    'pks': ','.join([str(pk) for pk in pks[1:]]),
+                    'pks': ','.join(pks[1:]),
                     'client_call': client_call
                 }
-            ))
+            )
         )
 
         r = Response()
