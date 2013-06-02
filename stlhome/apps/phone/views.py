@@ -136,12 +136,8 @@ class ShelterCallView(TwilioView):
                     kwargs={'client_call': client_call}
                 )
             ),
-            status_callback=reverse(
-                'phone:shelter_call_callback',
-                kwargs={
-                    'pks': ','.join(pks[1:]),
-                    'client_call': client_call
-                }
+            status_callback='/phone/shelter_call_callback/%s/%s' % (
+                client_call, ','.join(pks[1:])
             )
         )
 
@@ -154,7 +150,7 @@ class ShelterCallView(TwilioView):
         return r
 
 
-def send_client_to_post(request, client_call, pks):
+def shelter_call_callback(request, client_call, pks):
     call = Call.objects.get(pk=client_call)
     site = Site.objects.get_current()
     client.calls.route(
