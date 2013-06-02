@@ -182,7 +182,7 @@ class PostShelterCallView(TwilioView):
 
 
 class VerifyShelterAvailabilityView(TwilioView):
-    def get():
+    def get(self, request, client_call):
         r = Response()
         r.say('Is your refrigerator running?')
         return r
