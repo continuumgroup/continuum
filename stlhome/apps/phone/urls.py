@@ -9,5 +9,7 @@ urlpatterns = patterns(
     url(r'^collect_location/$', CollectLocationView.as_view(), name='collect_location'),
     url(r'^bed_count/$', BedCountView.as_view(), name='bed_count'),
     url(r'^find_shelter/$', FindShelterView.as_view(), name='find_shelter'),
-    url(r'^start_shelter_call/(?P<pks>.+)/$', ShelterCallView.as_view(), name='start_shelter_call'),
+    url(r'^start_shelter_call/(?P<client_call>\d+)/(?P<pks>.+)/$', ShelterCallView.as_view(), name='start_shelter_call'),
+    url(r'^post_shelter_call/(?P<client_call>\d+)/(?P<pks>.*)/$', PostShelterCallView.as_view(), name='post_shelter_call'),
+    url(r'^verify_shelter_availability/(?P<client_call>\d+)/$', VerifyShelterAvailabilityView.as_view(), name='start_shelter_call'),
 )

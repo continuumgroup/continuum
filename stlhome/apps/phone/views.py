@@ -101,20 +101,81 @@ class FindShelterView(TwilioView):
 
     def get(self, request):
         shelters = Shelter.objects.all()
-        return redirect(reverse('phone:start_shelter_call', kwargs={'pks': ','.join([str(s.pk) for s in shelters])}))
+        return redirect(reverse('phone:start_shelter_call', kwargs={
+            'pks': ','.join([str(s.pk) for s in shelters]),
+            'client_call': Call.objects.get_or_create(sid=request.POST['CallSid'])[0].pk
+        }))
 
 
 class ShelterCallView(TwilioView):
-    def get(self, request, pks):
-        pk = pks.split(',')[0]
-        shelter = Shelter.objects.get(pk=pk)
+    def get(self, request, client_call, pks):
+        pks = pks.split(',')
+        try:
+            shelter = Shelter.objects.get(pk=pks[0])
+        except Shelter.DoesNotExist:
+            pks = ','.join(pks[1:])
+            if pks:
+                return redirect(reverse(
+                    'phone:start_shelter_call',
+                    kwargs={
+                        'pks': pks,
+                        'client_call': client_call
+                    }
+                ))
 
         client.calls.create(
             to=shelter.phone_number,
             from_=settings.TWILIO_CALLER_ID,
-            url='http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient'
+            url=redirect(reverse(
+                'phone:verify_shelter_availability',
+                kwargs={'client_call': client_call}
+            )),
+            status_callback=redirect(reverse(
+                'phone:post_shelter_call',
+                kwargs={
+                    'pks': ','.join([str(pk) for pk in pks[1:]]),
+                    'client_call': client_call
+                }
+            ))
         )
 
         r = Response()
-        r.enqueue(name='waiting_for_shelter', wait_url='http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient')
+        r.say('We are contacting %s. Please hold.' % shelter.name)
+        r.enqueue(
+            name='waiting_for_shelter',
+            wait_url='http://twimlets.com/holdmusic?Bucket=com.twilio.music.ambient'
+        )
+        return r
+
+
+class PostShelterCallView(TwilioView):
+    def get(request, client_call, pks):
+        if pks == '':
+            return redirect(reverse('phone:operator'))
+
+        pks = pks.split(',')
+
+        call = Call.objects.get(pk=client_call)
+        if call.shelter:
+            r = Response()
+            r.say('%d beds have been reserved for tonight at %s. Their address is %s. Thank you.' % (
+                call.bed_count,
+                call.shelter.name,
+                call.shelter.address
+            ))
+            return r
+
+        else:
+            return redirect(reverse(
+                'phone:start_shelter_call',
+                kwargs={
+                    'pks': pks,
+                    'client_call': client_call
+                }
+            ))
+
+class VerifyShelterAvailabilityView(TwilioView):
+    def get():
+        r = Response()
+        r.say('Is your refrigerator running?')
         return r
