@@ -19,18 +19,16 @@ class StartView(TwilioView):
         if request.POST['Digits'] == '1':
             return redirect(reverse('phone:collect_location'))
         elif request.POST['Digits'] == '0':
-            r = Response()
-            r.say('You are calling an operator now in your mind')
+            return redirect(reverse('phone:operator'))
         else:
-            r = redirect(reverse('phone:start'))
+            return redirect(reverse('phone:start'))
 
-        return r
 
 class CollectLocationView(TwilioView):
     def get(self, request):
         r = Response()
         
-        r.say('''"Where are you now? At the tone, please say an address or street intersection in the Saint Louis area. Then press Pound.''')
+        r.say('''"Where are you now? At the tone, please say an address or street intersection in the Saint Louis area. When you are finished, press Pound.''')
         r.record(action=reverse('phone:collect_location'), method='POST', maxLength=10, timeout=2, transcribe=True)
 
         return r
@@ -40,4 +38,11 @@ class CollectLocationView(TwilioView):
 
         r = Response()
         r.say('thanks. love ya')
+        return r
+
+
+class VolunteerRedirectView(TwilioView):
+    def get(self, request):
+        r = Request()
+        r.say('You will be connected to an operator in the final product. For now, the call is over. Thank you.')
         return r
