@@ -38,13 +38,34 @@ class CollectLocationView(TwilioView):
     def get(self, request):
         r = Response()
         
-        r.say('''"Where are you now? At the tone, please say an address or street intersection in the Saint Louis area. When you are finished, press Pound.''')
-        r.record(action=reverse('phone:collect_location'), method='POST', maxLength=10, timeout=2, transcribe=True)
+        r.say('''Where are you now? At the tone, please say an address or street intersection in the Saint Louis area. When you are finished, press Pound.''')
+        r.record(action=reverse('phone:collect_location'), method='POST', maxLength=10, timeout=15)
 
         return r
 
     def post(self, request):
         # TODO: fill out this stub appropriate GIS conversion
+        call, _ = Call.objects.get_or_create(sid=request.POST['CallSid'])
+        call.location_name = request.POST['RecordingUrl']
+        call.save()
+
+        return redirect(reverse('phone:collect_name'))
+
+
+class CollectNameView(TwilioView):
+    def get(self, request):
+        r = Response()
+
+        r.say('''Please speak your name. This will help identify you when you arrive.''')
+        r.record(action=reverse('phone:collect_name'), method='POST', maxLength=10, timeout=15)
+
+        return r
+
+    def post(self, request):
+        call, _ = Call.objects.get_or_create(sid=request.POST['CallSid'])
+        call.client_name = request.POST['RecordingUrl']
+        call.save()
+
         return redirect(reverse('phone:bed_count'))
 
 
@@ -236,4 +257,3 @@ class VerifyShelterAvailabilityView(TwilioView):
             r.say('Thank you anyway. Have a nice day.')
 
         return r
-            
