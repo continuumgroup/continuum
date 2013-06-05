@@ -3,7 +3,7 @@ from django_fsm.db.fields import FSMField, transition
 
 from stlhome.apps.shelters.models import Shelter
 
-class Call(models.Model):
+class ClientCall(models.Model):
     'call from Twilio'
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
