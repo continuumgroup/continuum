@@ -8,7 +8,7 @@ class ClientCall(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    sid = models.CharField(max_length=34)
+    sid = models.CharField(max_length=34, db_index=True)
     bed_count = models.PositiveIntegerField(default=0)
     shelter = models.ForeignKey(Shelter, null=True)
 
