@@ -56,7 +56,10 @@ CELERY_ALWAYS_EAGER = True
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 INSTALLED_APPS += (
     'debug_toolbar',
+    'django_nose',
 )
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # See: https://github.com/django-debug-toolbar/django-debug-toolbar#installation
 INTERNAL_IPS = ('127.0.0.1',)
