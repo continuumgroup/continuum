@@ -11,11 +11,11 @@ from stlhome.apps.shelters.models import Shelter
 from stlhome.lib.twilioview import TwilioView
 from stlhome.lib.twilioclient import client
 
-from .models import Call
+from .models import ClientCall
 
 class StartView(TwilioView):
     def get(self, request):
-        Call.objects.get_or_create(sid=request.GET['CallSid'])
+        ClientCall.objects.get_or_create(sid=request.GET['CallSid'])
 
         r = Response()
 
@@ -45,7 +45,7 @@ class CollectLocationView(TwilioView):
 
     def post(self, request):
         # TODO: fill out this stub appropriate GIS conversion
-        call, _ = Call.objects.get_or_create(sid=request.POST['CallSid'])
+        call, _ = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
         call.location_name = request.POST['RecordingUrl']
         call.save()
 
@@ -62,7 +62,7 @@ class CollectNameView(TwilioView):
         return r
 
     def post(self, request):
-        call, _ = Call.objects.get_or_create(sid=request.POST['CallSid'])
+        call, _ = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
         call.client_name = request.POST['RecordingUrl']
         call.save()
 
@@ -88,7 +88,7 @@ class BedCountView(TwilioView):
     def post(self, request):
         digit = request.POST['Digits']
         if digit in '123456789':
-            call, created = Call.objects.get_or_create(sid=request.POST['CallSid'])
+            call, created = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
             call.bed_count = int(digit)
             call.save()
             
@@ -100,7 +100,7 @@ class BedCountView(TwilioView):
 class FindShelterView(TwilioView):
     # TODO: implement this API
     # def setup_call(self, request):
-    #     call = Call.objects.get_or_create(sid=request.POST['CallSid'])
+    #     call = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
     #     shelters = shelter.objects.find_beds_for_location(
     #         bed_count=call.bed_count,
     #         latitude=38.62824, longitude=-90.19069
@@ -127,7 +127,7 @@ class FindShelterView(TwilioView):
         shelters = Shelter.objects.all()
         return redirect(reverse('phone:start_shelter_call', kwargs={
             'pks': ','.join([str(s.pk) for s in shelters]),
-            'client_call': Call.objects.get_or_create(sid=request.GET['CallSid'])[0].pk
+            'client_call': ClientCall.objects.get_or_create(sid=request.GET['CallSid'])[0].pk
         }))
 
 
@@ -179,7 +179,7 @@ class ShelterCallView(TwilioView):
 
 
 def shelter_call_callback(request, client_call, pks):
-    call = Call.objects.get(pk=client_call)
+    call = ClientCall.objects.get(pk=client_call)
     site = Site.objects.get_current()
     client.calls.route(
         sid=call.sid,
@@ -200,7 +200,7 @@ def shelter_call_callback(request, client_call, pks):
 
 class PostShelterCallView(TwilioView):
     def get(self, request, client_call, pks):
-        call = Call.objects.get(pk=client_call)
+        call = ClientCall.objects.get(pk=client_call)
         if call.shelter:
             r = Response()
             r.say('%d beds have been reserved for tonight at %s. Their address is %s. Thank you.' % (
@@ -227,7 +227,7 @@ class PostShelterCallView(TwilioView):
 
 class VerifyShelterAvailabilityView(TwilioView):
     def get(self, request, client_call, pk):
-        call = Call.objects.get(pk=client_call)
+        call = ClientCall.objects.get(pk=client_call)
         url = reverse(
             'phone:verify_shelter_availability',
             kwargs={'pk': pk, 'client_call': client_call}
@@ -248,7 +248,7 @@ class VerifyShelterAvailabilityView(TwilioView):
         r = Response()
 
         if request.POST['Digits'] == '1':
-            call = Call.objects.get(pk=client_call)
+            call = ClientCall.objects.get(pk=client_call)
             call.shelter = Shelter.objects.get(pk=pk)
             call.save()
 
