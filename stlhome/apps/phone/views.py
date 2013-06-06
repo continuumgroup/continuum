@@ -82,6 +82,9 @@ class OperatorView(TwilioView):
 
 class BedCountView(TwilioView):
     def get(self, request):
+        call, _ = ClientCall.objects.get_or_create(sid=request.GET['CallSid'])
+        call.request_bed_count()
+
         r = Response()
         r.say('How many beds do you need tonight?')
         with r.gather(finishOnKey='#', method='POST', action=reverse('phone:bed_count'), numdigits=1) as g:
@@ -92,9 +95,9 @@ class BedCountView(TwilioView):
     def post(self, request):
         digit = request.POST['Digits']
         if digit in '123456789':
-            call, created = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
-            call.bed_count = int(digit)
-            call.save()
+            call, _ = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
+            call.process_bed_count(request)
+            print call.call_state
             
             return redirect(reverse('phone:find_shelter'))
         else:

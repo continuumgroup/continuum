@@ -148,3 +148,46 @@ class CollectNameViewTests(TwilioTest):
         self.set_state('requested_name')
         self.post({'RecordingUrl': 'test'})
         self.assertState('processed_name')
+
+
+class BedCountViewTests(TwilioTest):
+    '''tests for BedCountView'''
+    view = views.BedCountView()
+    def test_get_gathers(self):
+        '''GET gathers'''
+        resp = self.get()
+
+        _, gather = resp.verbs
+        self.assertEqual('POST', gather.attrs['method'])
+        self.assertEqual(reverse('phone:bed_count'), gather.attrs['action'])
+
+    def test_get_calls_request_bed_count(self):
+        '''GET calls request_bed_count'''
+        self.get()
+        self.assertState('requested_bed_count')
+
+    def test_post_redirects_good(self):
+        '''POST redirects'''
+        self.set_state('requested_bed_count')
+        resp = self.post({'Digits': '1'})
+        
+        self.assertEqual(
+            reverse('phone:find_shelter'),
+            resp['location']
+        )
+
+    def test_post_redirects_bad(self):
+        '''POST redirects to self for bad input'''
+        self.set_state('requested_bed_count')
+        resp = self.post({'Digits': '*'})
+        
+        self.assertEqual(
+            reverse('phone:bed_count'),
+            resp['location']
+        )
+
+    def test_post_calls_process_beds(self):
+        '''POST calls process_beds'''
+        self.set_state('requested_bed_count')
+        self.post({'Digits': '1'})
+        self.assertState('processed_bed_count')
