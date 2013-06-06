@@ -36,6 +36,9 @@ class StartView(TwilioView):
 
 class CollectLocationView(TwilioView):
     def get(self, request):
+        call, _ = ClientCall.objects.get_or_create(sid=request.GET['CallSid'])
+        call.request_location()
+
         r = Response()
         
         r.say('''Where are you now? At the tone, please say an address or street intersection in the Saint Louis area. When you are finished, press Pound.''')
@@ -46,8 +49,7 @@ class CollectLocationView(TwilioView):
     def post(self, request):
         # TODO: fill out this stub appropriate GIS conversion
         call, _ = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
-        call.location_name = request.POST['RecordingUrl']
-        call.save()
+        call.process_location(request)
 
         return redirect(reverse('phone:collect_name'))
 

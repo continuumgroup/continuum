@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from mock import patch
+from mock import patch, Mock
 
 from stlhome.lib.test import BaseTest
 
@@ -12,10 +12,17 @@ class TwilioTest(BaseTest):
     def setUp(self):
         self.sid = 'sid'
         self.cc = self.deliver(ClientCall, sid=self.sid, call_state='welcome')
-
-    def tearDown(self):
-        '''clean up objects created during test'''
         self.addCleanup(ClientCall.objects.filter(sid=self.sid).delete)
+
+    def assertState(self, state):
+        '''assert a state of the given call, given a state'''
+        # reference isn't updated, so fetch fresh
+        self.assertEqual(state, ClientCall.objects.get(sid=self.sid).call_state)
+
+    def set_state(self, state):
+        '''update ClientCall with new state'''
+        self.cc.call_state = state
+        self.cc.save()
 
     def request(self, method, data=None):
         all_data = {'CallSid': self.sid}
@@ -75,3 +82,36 @@ class StartViewTests(TwilioTest):
             reverse('phone:start'),
             resp['location']
         )
+
+
+class CollectLocationViewTests(TwilioTest):
+    '''tests for CollectLocationView'''
+    view = views.CollectLocationView()
+    def test_get_records(self):
+        '''records location (audio)'''
+        r = self.get()
+        
+        _, record = r.verbs
+        self.assertEqual('POST', record.attrs['method'])
+        self.assertEqual(reverse('phone:collect_location'), record.attrs['action'])
+
+    def test_get_calls_request_location(self):
+        '''calls request_location on a ClientCall GET'''
+        self.get()
+
+    def test_post_redirects(self):
+        '''POST redirects to bed_count'''
+        self.set_state('requested_location')
+        resp = self.post({'RecordingUrl': 'test'})
+
+        self.assertEqual(
+            reverse('phone:collect_name'),
+            resp['location']
+        )
+
+    def test_post_calls_process_location(self):
+        '''calls process_location on a ClientCall POST'''
+        self.set_state('requested_location')
+        self.post({'RecordingUrl': 'test'})
+
+        self.assertState('processed_location')
