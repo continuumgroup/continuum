@@ -56,6 +56,9 @@ class CollectLocationView(TwilioView):
 
 class CollectNameView(TwilioView):
     def get(self, request):
+        call, _ = ClientCall.objects.get_or_create(sid=request.GET['CallSid'])
+        call.request_name()
+
         r = Response()
 
         r.say('''Please speak your name. This will help identify you when you arrive.''')
@@ -65,8 +68,7 @@ class CollectNameView(TwilioView):
 
     def post(self, request):
         call, _ = ClientCall.objects.get_or_create(sid=request.POST['CallSid'])
-        call.client_name = request.POST['RecordingUrl']
-        call.save()
+        call.process_name(request)
 
         return redirect(reverse('phone:bed_count'))
 

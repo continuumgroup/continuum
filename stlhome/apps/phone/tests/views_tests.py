@@ -115,3 +115,36 @@ class CollectLocationViewTests(TwilioTest):
         self.post({'RecordingUrl': 'test'})
 
         self.assertState('processed_location')
+
+
+class CollectNameViewTests(TwilioTest):
+    '''tests for CollectNameView'''
+    view = views.CollectNameView()
+    def test_get_records(self):
+        '''GET records audio'''
+        resp = self.get()
+
+        _, record = resp.verbs
+        self.assertEqual('POST', record.attrs['method'])
+        self.assertEqual(reverse('phone:collect_name'), record.attrs['action'])
+
+    def test_get_calls_request_name(self):
+        '''GET calls request_name on ClientCall'''
+        self.get()
+        self.assertState('requested_name')
+
+    def test_post_redirects(self):
+        '''POST redirects'''
+        self.set_state('requested_name')
+        resp = self.post({'RecordingUrl': 'test'})
+
+        self.assertEqual(
+            reverse('phone:bed_count'),
+            resp['location']
+        )
+
+    def test_post_calls_process_name(self):
+        '''POST calls process_name on ClientCall'''
+        self.set_state('requested_name')
+        self.post({'RecordingUrl': 'test'})
+        self.assertState('processed_name')
