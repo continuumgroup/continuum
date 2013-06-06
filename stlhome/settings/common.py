@@ -188,15 +188,17 @@ DJANGO_APPS = (
 )
 
 THIRD_PARTY_APPS = (
-    # Database migration helpers:
+    # Database
     'south',
+    'django_fsm',
 
-    # Static file management:
+    # Static file management
     'compressor',
 
-    # Asynchronous task queue:
+    # Asynchronous task queue
     'djcelery',
 
+    # Telephony
     'django_twilio',
 )
 
