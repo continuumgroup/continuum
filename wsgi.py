@@ -1,5 +1,5 @@
 """
-WSGI config for stlhome project.
+WSGI config for continuum project.
 
 This module contains the WSGI application used by Django's development server
 and any production WSGI deployments. It should expose a module-level variable
@@ -15,7 +15,7 @@ framework.
 """
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "stlhome.settings.dev")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "continuum.settings.dev")
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION

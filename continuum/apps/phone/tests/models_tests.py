@@ -1,6 +1,6 @@
 from mock import patch
 
-from stlhome.lib.test import BaseTest
+from continuum.lib.test import BaseTest
 from ..models import ClientCall
 
 
@@ -78,7 +78,7 @@ class ClientCallTests(BaseTest):
         self.assertTransition('welcome', 'decline', 'declined')
 
     # TODO: get this test working again
-    # @patch('stlhome.apps.phone.models.client')
+    # @patch('continuum.apps.phone.models.client')
     # def test_dequeued(self, mock_client):
     #     cc = self.assertTransition(
     #         'enqueued', 'dequeue', 'dequeued',

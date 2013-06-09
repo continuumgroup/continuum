@@ -6,8 +6,8 @@ from django_fsm.db.fields import FSMField, transition
 from twilio.twiml import Response
 from urlparse import urljoin
 
-from stlhome.apps.shelters.models import Shelter
-from stlhome.lib.twilioclient import client
+from continuum.apps.shelters.models import Shelter
+from continuum.lib.twilioclient import client
 
 class ClientCall(models.Model):
     'call from Twilio'

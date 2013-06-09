@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from stlhome.lib.choice import Choice
+from continuum.lib.choice import Choice
 
 class RoleChoices(Choice):
     '''choices for UserProfile role'''

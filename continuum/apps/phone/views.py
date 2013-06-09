@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from twilio.twiml import Response
 from django_twilio.decorators import twilio_view
 
-from stlhome.apps.shelters.models import Shelter
-from stlhome.lib.twilioview import TwilioView
-from stlhome.lib.twilioclient import client
+from continuum.apps.shelters.models import Shelter
+from continuum.lib.twilioview import TwilioView
+from continuum.lib.twilioclient import client
 
 from .models import ClientCall
 

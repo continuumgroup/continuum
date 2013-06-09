@@ -3,11 +3,11 @@ services:
  - postgresql
  - memcache
 before_script:
- - psql -c "create database stlhome_test;" -U postgres
+ - psql -c "create database continuum_test;" -U postgres
 before_install:
  - sudo apt-get install libevent-dev
 env:
- - DJANGO_SETTINGS_MODULE=stlhome.settings.travis DATABASE_URL=postgres://postgres:@127.0.0.1/stlhome_test MEMCACHIER_SERVERS=localhost:11211
+ - DJANGO_SETTINGS_MODULE=continuum.settings.travis DATABASE_URL=postgres://postgres:@127.0.0.1/continuum_test MEMCACHIER_SERVERS=localhost:11211
 python:
  - "2.7"
 install:
