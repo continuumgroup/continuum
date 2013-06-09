@@ -2,8 +2,12 @@ from os import environ
 from django.conf import settings
 from twilio.rest import TwilioRestClient
 
-if 'CI' in environ:  # mock things out to test anyway, please
-    from mock import Mock
-    client = Mock()
-else:
-    client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+class Client(TwilioClient):
+    '''client wrapper around TwilioClient'''
+    def __init__(self):
+        super(TwilioClient, self).__init__(
+            settings.TWILIO_ACCOUNT_SID,
+            settings.TWILIO_AUTH_TOKEN
+        )
+
+client = Client()
