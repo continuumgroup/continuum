@@ -31,3 +31,7 @@ INSTALLED_APPS += (
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 ########## END TESTING CONFIGURATION
+
+########## TESTING
+from .testing import *
+########## END TESTING
