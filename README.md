@@ -19,7 +19,9 @@ To enable testing, we need the `continuum` user as a superuser in the database:
     CREATE DATABASE continuum;
     ALTER USER continuum WITH superuser;
 
-We need the btree-GiST, cube, and earthdistance extensions.
+We need the btree-GiST, cube, and earthdistance extensions. They are included
+in [postgres.app][pg.app], but may not be in a package manager. Try this to
+make sure they're available:
 
     CREATE EXTENSION btree_gist;
     CREATE EXTENSION cube;
