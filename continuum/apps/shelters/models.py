@@ -5,19 +5,30 @@ import logging
 # from pygeocoder import Geocoder
 
 from continuum.lib.choice import Choice
+from continuum.lib.queryset import MixinManager
 
 logger = logging.getLogger(__name__)
+
 
 class ClassifierChoices(Choice):
     ALLOW = 'allow'
     BLOCK = 'block'
 
 
-class ShelterManager(models.Manager):
-    '''manage and query shelter objects'''
+class GeoQueryMixin(object):
+    def near(self, latitude, longitude, distance):
+        '''filter records, limiting to those nearby. Distance is in meters'''
+        return self.extra(
+            where=['earth_box(ll_to_earth(%s, %s), %s) @> ll_to_earth("latitude", "longitude")'],
+            params=[latitude, longitude, distance]
+        )
+
+
+class ShelterMixin(object):
+    '''mixin specifically for Shelters'''
     def available(self):
         '''available shelters (defined as those with available beds)'''
-        return self.get_queryset().exclude(
+        return self.exclude(
             availability__when=datetime.now() - settings.AVAILABILITY_EXPIRY,
             availability__available=0
         )
@@ -37,7 +48,8 @@ class Shelter(models.Model):
     latitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True)
     longitude = models.DecimalField(max_digits=13, decimal_places=10, blank=True, null=True)
 
-    objects = ShelterManager()
+    objects = MixinManager(mixins=(ShelterMixin, GeoQueryMixin))
+    # objects = ShelterManager()
 
     def set_coords(self):
         '''set coordinates based on an address'''
