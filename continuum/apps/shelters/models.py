@@ -60,3 +60,6 @@ class Availability(models.Model):
 
     when = models.DateTimeField(auto_now_add=True)
     available = models.PositiveIntegerField()
+
+    class Meta:
+        verbose_name_plural = 'availabilities'
