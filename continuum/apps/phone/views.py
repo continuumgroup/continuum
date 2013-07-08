@@ -8,8 +8,8 @@ from twilio.twiml import Response
 from django_twilio.decorators import twilio_view
 
 from continuum.apps.shelters.models import Shelter
-from continuum.lib.twilioview import TwilioView
-from continuum.lib.twilioclient import client
+from continuum.libs.twilioview import TwilioView
+from continuum.libs.twilioclient import client
 
 from .models import ClientCall
 

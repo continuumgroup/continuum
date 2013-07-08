@@ -1,6 +1,6 @@
 from mock import patch
 
-from continuum.lib.test import BaseTest
+from continuum.libs.test import BaseTest
 from ..models import ClientCall
 
 

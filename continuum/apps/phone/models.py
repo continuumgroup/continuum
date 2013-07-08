@@ -7,7 +7,7 @@ from twilio.twiml import Response
 from urlparse import urljoin
 
 from continuum.apps.shelters.models import Shelter
-from continuum.lib.twilioclient import client
+from continuum.libs.twilioclient import client
 
 class ClientCall(models.Model):
     'call from Twilio'

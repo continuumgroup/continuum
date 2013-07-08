@@ -4,7 +4,7 @@ from django.db import models
 import logging
 # from pygeocoder import Geocoder
 
-from continuum.lib.choice import Choice
+from continuum.libs.choice import Choice
 
 logger = logging.getLogger(__name__)
 

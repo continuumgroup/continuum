@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from mock import patch, Mock
 
-from continuum.lib.test import BaseTest
+from continuum.libs.test import BaseTest
 
 from .. import views
 from ..models import ClientCall
