@@ -50,6 +50,12 @@ class Shelter(models.Model):
         if not instance.latitude or not instance.longitude:
             instance.set_coords()
 
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return str(self.name)
+
 # connect singals for Shelter
 models.signals.pre_save.connect(Shelter.pre_save, sender=Shelter)
 

@@ -28,3 +28,17 @@ class ShelterModelTests(BaseTest):
         m_atl.assert_called_with(x.address)
         self.assertEqual(m_atl.return_value[0], x.latitude)
         self.assertEqual(m_atl.return_value[1], x.longitude)
+
+    def test_unicode_is_name(self):
+        'magic unicode returns name'
+        self.assertEqual(
+            unicode(Shelter(name='Test Shelter')),
+            'Test Shelter'
+        )
+
+    def test_string_is_name(self):
+        'magic string returns name'
+        self.assertEqual(
+            str(Shelter(name='Test Shelter')),
+            'Test Shelter'
+        )
