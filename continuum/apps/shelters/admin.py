@@ -22,3 +22,5 @@ class ShelterAdmin(admin.ModelAdmin):
     search_fields = ('name', 'address', 'phone_number')
 
 admin.site.register(Shelter, ShelterAdmin)
+
+admin.site.register(Availability)
