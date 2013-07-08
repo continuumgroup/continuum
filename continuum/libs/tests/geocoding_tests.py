@@ -25,7 +25,7 @@ class AddressToLatlngTests(BaseTest):
         'if bad data is passed, raises a BadDataError'
         httpretty.register_uri(
             httpretty.GET, settings.GEOCODING_API_ENDPOINT,
-            body='{"results" : [], "status" : "SOMETHING"}',
+            body='{"results" : [], "status" : "OK"}',
             content_type='application/json'
         )
 
