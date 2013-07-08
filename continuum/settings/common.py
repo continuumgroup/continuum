@@ -278,3 +278,7 @@ TWILIO_CALLER_ID = environ.get('TWILIO_CALLER_ID', '9991231234')
 ########## GEOCODING
 GEOCODING_API_ENDPOINT = 'https://maps.googleapis.com/maps/api/geocode/json'
 ########## END GEOCODING
+
+########## GRAPPELLI
+GRAPPELLI_ADMIN_TITLE = 'Continuum'
+########## END GRAPPELLI
