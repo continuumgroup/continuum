@@ -11,3 +11,10 @@ class TwilioViewTests(BaseTest):
         'no signature is forbidden'
         req = self.factory.post('/')
         self.assertEqual(405, self.view(req).status_code)
+
+    def test_bad_signature(self):
+        'bad signature is forbidden'
+        req = self.factory.post('/')
+        req.META['HTTP_X_TWILIO_SIGNATURE'] = 'bad_signature'
+
+        self.assertEqual(405, self.view(req).status_code)
