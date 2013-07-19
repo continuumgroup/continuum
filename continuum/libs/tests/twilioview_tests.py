@@ -40,3 +40,20 @@ class TwilioViewTests(BaseTest):
                 self.view.verify_request()
             except PermissionDenied:
                 self.fail('Raised PermissionDenied when not expecting it')
+
+    def test_good_signature_GET(self):
+        'good signature is allowed on GET'
+        with self.settings(TWILIO_AUTH_TOKEN='fred'):
+            req = self.factory.get('/', data={'a': 'b'})
+
+            validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
+            req.META['HTTP_X_TWILIO_SIGNATURE'] = validator.compute_signature(
+                req.build_absolute_uri(), req.POST
+            )
+
+            self.view.request = req
+
+            try:
+                self.view.verify_request()
+            except PermissionDenied:
+                self.fail('Raised PermissionDenied when not expecting it')
