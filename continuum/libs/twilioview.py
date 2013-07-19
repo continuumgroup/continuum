@@ -1,5 +1,6 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import View
@@ -19,10 +20,10 @@ class TwilioView(View):
             url = self.request.build_absolute_uri()
             signature = self.request.META['HTTP_X_TWILIO_SIGNATURE']
         except (AttributeError, KeyError):
-            return HttpResponseForbidden()
+            raise PermissionDenied()
 
-        if not validator.validate(url, request.POST, signature):
-            return HttpResponseForbidden()
+        if not validator.validate(url, self.request.POST, signature):
+            raise PermissionDenied()
 
     @method_decorator(csrf_exempt)
     def dispatch(self, *args, **kwargs):
