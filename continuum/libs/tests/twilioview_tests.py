@@ -1,4 +1,5 @@
 'tests for continuum.libs.tests.twilioview'
+from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from twilio.util import RequestValidator
 
@@ -22,3 +23,20 @@ class TwilioViewTests(BaseTest):
         self.view.request.META['HTTP_X_TWILIO_SIGNATURE'] = 'bad_signature'
 
         self.assertRaises(PermissionDenied, self.view.verify_request)
+
+    def test_good_signature(self):
+        'good signature is allowed'
+        with self.settings(TWILIO_AUTH_TOKEN='fred'):
+            req = self.factory.post('/', data={'a': 'b'})
+
+            validator = RequestValidator(settings.TWILIO_AUTH_TOKEN)
+            req.META['HTTP_X_TWILIO_SIGNATURE'] = validator.compute_signature(
+                req.build_absolute_uri(), req.POST
+            )
+
+            self.view.request = req
+
+            try:
+                self.view.verify_request()
+            except PermissionDenied:
+                self.fail('Raised PermissionDenied when not expecting it')
